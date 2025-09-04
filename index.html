@@ -11,11 +11,11 @@
     <div class="diceBoard">
         <div class="header">
             <h1>Farkle</h1>
+            <button id="startButton" onclick="startGame()">Start</button>
         </div>
         <div class="diceSet">
             <div class="die">
                 <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
             </div>
             <div class="die">
                 <p>i</p>
@@ -40,15 +40,9 @@
             </div>
         </div>
         <div class="buttonSet">
-            <div class="Button">
-                <p>Roll</p>
-            </div>
-            <div class="Button">
-                <p>Hold</p>
-            </div>
-            <div class="Button">
-                <p>Pass</p>
-            </div>
+            <button id="rollButton" onclick="rollDice()">Roll</button>
+            <button id="holdButton" onclick="holdDice()">Hold</button>
+            <button id="passButton" onclick="passDice()">Pass</button>
         </div>
         <div class="scoreBoard">
             <div class="score">
@@ -56,7 +50,7 @@
                 <p>hand</p>
             </div>
             <div class="score">
-                <p>1000</p>
+                <p>0</p>
                 <p>bank</p>
             </div>
         </div>

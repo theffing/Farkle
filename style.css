@@ -13,6 +13,7 @@ body {
 h1 {
     font-size: 32pt;
     font-weight: 700;
+    margin: 0px;
 }
 
 p {
@@ -21,7 +22,7 @@ p {
 
 .header {
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     justify-items: left;
     gap: 15px;
 }
@@ -92,11 +93,12 @@ p {
     gap: 15px;
 }
 
-.Button {
+button {
     width: 100px;
     height: 50px;
 
-    background-color: white;
+    border: none;
+    background-color: #ffffffc9;
     border-radius: 5px;
 
     text-align: center;

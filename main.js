@@ -9,3 +9,45 @@
 //      if pass is clicked
 //          add hand to bank
 // 
+
+// Header Button that starts roll and disappears
+
+function startGame() {
+    // Hide Start button after starting game for cleanliness
+    var button = document.getElementById('startButton');
+    if (button) {
+        button.style.visibility = 'hidden';
+    }
+
+    let diceSet = [
+        [1, false],
+        [1, false],
+        [1, false],
+        [1, false],
+        [1, false],
+        [1, false],
+    ];
+
+
+    var alive = true;
+
+    while(alive) {
+        break;
+    }
+}
+
+function rollDice() {
+
+}
+
+function holdDice() {
+
+}
+
+function passDice() {
+
+}
+
+function setDie(e) {
+
+}
