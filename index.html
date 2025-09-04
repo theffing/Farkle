@@ -11,37 +11,18 @@
     <div class="diceBoard">
         <div class="header">
             <h1>Farkle</h1>
-            <button id="startButton" onclick="startGame()">Start</button>
         </div>
+        <button id="startButton" onclick="startGame()">Start</button>
         <div class="diceSet">
-            <div class="die">
-                <p>i</p>
-            </div>
-            <div class="die">
-                <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
-            </div>
-            <div class="die">
-                <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
-            </div>
-            <div class="die">
-                <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
-            </div>
-            <div class="die">
-                <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
-            </div>
-
-            <div class="die">
-                <p>i</p>
-                <!--javascript will create 6 of these at the start of each player round-->
-            </div>
+            <button id="0" class="die" onclick="setDie(id)">i</button>
+            <button id="1" class="die" onclick="setDie(id)">i</button>
+            <button id="2" class="die" onclick="setDie(id)">i</button>
+            <button id="3" class="die" onclick="setDie(id)">i</button>
+            <button id="4" class="die" onclick="setDie(id)">i</button>
+            <button id="5" class="die" onclick="setDie(id)">i</button>
         </div>
         <div class="buttonSet">
             <button id="rollButton" onclick="rollDice()">Roll</button>
-            <button id="holdButton" onclick="holdDice()">Hold</button>
             <button id="passButton" onclick="passDice()">Pass</button>
         </div>
         <div class="scoreBoard">

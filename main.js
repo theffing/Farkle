@@ -10,7 +10,15 @@
 //          add hand to bank
 // 
 
-// Header Button that starts roll and disappears
+// dice board, die 1 is [0][0] for # and [0][1] to check if it is being held.
+let diceSet = [
+    [1, false],
+    [1, false],
+    [1, false],
+    [1, false],
+    [1, false],
+    [1, false],
+];
 
 function startGame() {
     // Hide Start button after starting game for cleanliness
@@ -19,19 +27,13 @@ function startGame() {
         button.style.visibility = 'hidden';
     }
 
-    let diceSet = [
-        [1, false],
-        [1, false],
-        [1, false],
-        [1, false],
-        [1, false],
-        [1, false],
-    ];
-
-
     var alive = true;
 
     while(alive) {
+        var hand = true;
+        while(hand) {
+            break;
+        }
         break;
     }
 }
@@ -40,14 +42,20 @@ function rollDice() {
 
 }
 
-function holdDice() {
-
-}
-
 function passDice() {
 
 }
 
 function setDie(e) {
-
+    var die = document.getElementById(e);
+    if (die) {
+        if (diceSet[Number(e)][1]) {
+            die.style.backgroundColor = '#ffffffc9';
+            diceSet[Number(e)][1] = false;
+        }
+        else {
+            die.style.backgroundColor = '#ffffff5a';
+            diceSet[Number(e)][1] = true;
+        }
+    }
 }
