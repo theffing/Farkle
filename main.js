@@ -27,19 +27,18 @@ function startGame() {
         button.style.visibility = 'hidden';
     }
 
-    var alive = true;
-
-    while(alive) {
-        var hand = true;
-        while(hand) {
-            break;
-        }
-        break;
-    }
+    setTimeout(showDice, 50);
 }
 
 function rollDice() {
+    for (let i = 0; i < 6; i++) {
+        if (!diceSet[i][1]) {
+            diceSet[i][0] = getRandomInt(1, 6);
 
+            var die = document.getElementById(i);
+            die.textContent = (diceSet[i][0]).toString();
+        }
+    }
 }
 
 function passDice() {
@@ -58,4 +57,16 @@ function setDie(e) {
             diceSet[Number(e)][1] = true;
         }
     }
+}
+
+function showDice() {
+    var allDice = document.getElementById('diceSet');
+    if (allDice) {
+        allDice.style.visibility = 'visible';
+    }
+}
+
+// From https://gist.github.com/kerimdzhanov/7529623
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
 }
