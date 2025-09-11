@@ -1,45 +1,60 @@
-// When the user starts the Farkle the bank and hand is set to 0 and all die are set to the 1 position
-// click roll to begin
-//      roll all six die
-//      
-//      if any die is clicked
-//          mark it
-//      if 1 or more die are clicked and hold is clicked
-//          add appropriate score from clicked die to hand
-//      if pass is clicked
-//          add hand to bank
-// 
+// Referenceable Variables ---------------------------------------------------
 
 let roman = ['0', 'i', 'ii', 'iii', 'iv', 'v', 'vi'];
 
-// dice board, die 1 is [0][0] for # and [0][1] to check if it is being held.
+var startButton;
+var rollButton;
+var passButton;
+var retryButton;
+// The visual Set of Dice
+var visualDiceSet;
+
+var bankText;
+var handText;
+
+// die 1 is [0][0] for Num and [0][1] to check if Held.
 let diceSet = [
-    [1, false],
-    [1, false],
-    [1, false],
-    [1, false],
-    [1, false],
-    [1, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
 ];
 
 let bank = 0;
 let hand = 0;
 
 let dead = false;
-let turn = true;
+let turn = false;
+let start = false;
 
+// Button Functions-----------------------------------------------------------
 function startGame() {
+    //
+    startButton = document.getElementById('startButton');
+    rollButton = document.getElementById('rollButton');
+    rollButton.style.visibility = 'visible';
+    passButton = document.getElementById('passButton');
+    passButton.style.visibility = 'visible';
+    retryButton = document.getElementById('retryButton');
+    retryButton.style.visibility = 'hidden';
+    // The visual Set of Dice
+    visualDiceSet = document.getElementById('diceSet');
+    //
+    bankText = document.getElementById('bank');
+    handText = document.getElementById('hand');
     // Hide Start button after starting game for cleanliness
-    var button = document.getElementById('startButton');
-    if (button) {
-        button.style.visibility = 'hidden';
-    }
+    startButton.style.visibility = 'hidden';
 
     // reveals set of dice
     setTimeout(showDice, 50);
+    turn = true;
 }
 
 function rollDice() {
+    start = true;
+    calculateHand();
     // check if at least one die is being held
     for (let i = 0; i < 6; i++) {
         if (diceSet[i][1]) {
@@ -57,66 +72,97 @@ function rollDice() {
                 die.textContent = (roman[diceSet[i][0]]);
             }
         }
-        checkDie();
         turn = false;
+        checkDie();
     }
 }
 
 function passDice() {
-    calculateHand();
-    turn = true;
-    bank += hand;
+    if (turn) {
+        calculateHand();
+        turn = true;
+        bank += hand;
+        hand = 0;
+        
+        bankText.textContent = bank;
+    }
+}
+
+function retry() {
     hand = 0;
-    var bankText = document.getElementById('bank');
-    bankText.textContent = bank;
+    bank = 0;
+    startButton.style.visibility = 'visible';
+    retryButton.style.visibility = 'hidden';
 }
 
-function setDie(e) {
-    var die = document.getElementById(e);
-    if (die) {
-        if (diceSet[Number(e)][1]) {
-            die.style.backgroundColor = '#ffffffc9';
-            diceSet[Number(e)][1] = false;
-        }
-        else {
-            die.style.backgroundColor = '#ffffff5a';
-            diceSet[Number(e)][1] = true;
-            calculateHand();
-        }
-    }
-}
-
-function showDice() {
-    var allDice = document.getElementById('diceSet');
-    if (allDice) {
-        allDice.style.visibility = 'visible';
-    }
-}
+// Helper Functions ----------------------------------------------------------
 
 // From https://gist.github.com/kerimdzhanov/7529623
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+function setDie(e) {
+    if (start) {
+        var die = document.getElementById(e);
+        if (die) {
+            if (diceSet[Number(e)][1]) {
+                die.style.backgroundColor = '#ffffffc9';
+                diceSet[Number(e)][1] = false;
+            }
+            else {
+                die.style.backgroundColor = '#ffffff5a';
+                diceSet[Number(e)][1] = true;
+            }
+        }
+    }
+}
+
 function calculateHand() {
-    var hand = document.getElementById('hand');
     let sum = 0;
     for (let i = 0; i < 6; i++) {
         if (diceSet[i][1] && diceSet[i][1] == 1) {
             sum += 1;
         }
     }
-    sum += Number(hand.textContent);
-    hand.textContent = sum;
+    sum += Number(handText.textContent);
+    handText.textContent = sum;
 }
 
 function checkDie() {
     dice = [];
     for (let i = 0; i < 6; i++) {
-        if (diceSet)
         dice[diceSet[i][0]] += 1;
     }
     if (dice[1] > 0 || dice[2] > 2 || dice[3] > 2 || dice[4] > 2 || dice[5] > 0 || dice[6] > 2) {
-        hand += 1000;
+        dead = false;
     }
+    else { 
+        died();
+    }
+}
+
+function showDice() {
+    visualDiceSet.style.visibility = 'visible';
+}
+
+function resetDice() {
+    diceSet = [
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+    ];
+}
+
+function died() {
+    dead = true;
+    turn = false;
+
+    retryButton.style.visibility = 'visible';
+    rollButton.style.visibility = 'hidden'; 
+    passButton.style.visibility = 'hidden';
+    visualDiceSet.style.visibility = 'hidden';
 }
