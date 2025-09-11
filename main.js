@@ -10,6 +10,8 @@
 //          add hand to bank
 // 
 
+let roman = ['0', 'i', 'ii', 'iii', 'iv', 'v', 'vi'];
+
 // dice board, die 1 is [0][0] for # and [0][1] to check if it is being held.
 let diceSet = [
     [1, false],
@@ -20,6 +22,12 @@ let diceSet = [
     [1, false],
 ];
 
+let bank = 0;
+let hand = 0;
+
+let dead = false;
+let turn = true;
+
 function startGame() {
     // Hide Start button after starting game for cleanliness
     var button = document.getElementById('startButton');
@@ -27,22 +35,40 @@ function startGame() {
         button.style.visibility = 'hidden';
     }
 
+    // reveals set of dice
     setTimeout(showDice, 50);
 }
 
 function rollDice() {
+    // check if at least one die is being held
     for (let i = 0; i < 6; i++) {
-        if (!diceSet[i][1]) {
-            diceSet[i][0] = getRandomInt(1, 6);
-
-            var die = document.getElementById(i);
-            die.textContent = (diceSet[i][0]).toString();
+        if (diceSet[i][1]) {
+            turn = true;
         }
+    }
+    if (turn && !dead) {
+        // roll each die unless it is being held
+        for (let i = 0; i < 6; i++) {
+            if (!diceSet[i][1]) {
+                // rolling the individual die
+                diceSet[i][0] = getRandomInt(1, 6);
+                // making the visual die match the array
+                var die = document.getElementById(i);
+                die.textContent = (roman[diceSet[i][0]]);
+            }
+        }
+        checkDie();
+        turn = false;
     }
 }
 
 function passDice() {
-
+    calculateHand();
+    turn = true;
+    bank += hand;
+    hand = 0;
+    var bankText = document.getElementById('bank');
+    bankText.textContent = bank;
 }
 
 function setDie(e) {
@@ -55,6 +81,7 @@ function setDie(e) {
         else {
             die.style.backgroundColor = '#ffffff5a';
             diceSet[Number(e)][1] = true;
+            calculateHand();
         }
     }
 }
@@ -69,4 +96,27 @@ function showDice() {
 // From https://gist.github.com/kerimdzhanov/7529623
 function getRandomInt(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+function calculateHand() {
+    var hand = document.getElementById('hand');
+    let sum = 0;
+    for (let i = 0; i < 6; i++) {
+        if (diceSet[i][1] && diceSet[i][1] == 1) {
+            sum += 1;
+        }
+    }
+    sum += Number(hand.textContent);
+    hand.textContent = sum;
+}
+
+function checkDie() {
+    dice = [];
+    for (let i = 0; i < 6; i++) {
+        if (diceSet)
+        dice[diceSet[i][0]] += 1;
+    }
+    if (dice[1] > 0 || dice[2] > 2 || dice[3] > 2 || dice[4] > 2 || dice[5] > 0 || dice[6] > 2) {
+        hand += 1000;
+    }
 }
