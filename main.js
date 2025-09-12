@@ -14,24 +14,25 @@ var handText;
 
 // die 1 is [0][0] for Num and [0][1] to check if Held.
 let diceSet = [
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-];
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+    ];
 
 let bank = 0;
 let hand = 0;
 
+let count = 0;
 let dead = false;
 let turn = false;
+// preliminary bool to enforce proper use of setDie
 let start = false;
 
 // Button Functions-----------------------------------------------------------
 function startGame() {
-    //
     startButton = document.getElementById('startButton');
     rollButton = document.getElementById('rollButton');
     rollButton.style.visibility = 'visible';
@@ -41,23 +42,30 @@ function startGame() {
     retryButton.style.visibility = 'hidden';
     // The visual Set of Dice
     visualDiceSet = document.getElementById('diceSet');
-    //
+    
     bankText = document.getElementById('bank');
     handText = document.getElementById('hand');
     // Hide Start button after starting game for cleanliness
     startButton.style.visibility = 'hidden';
 
+    resetDice();
     // reveals set of dice
     setTimeout(showDice, 50);
+    dead = false;
     turn = true;
 }
 
 function rollDice() {
     start = true;
     calculateHand();
+    // check if hold count is a successful six
+    if (count == 6) {
+        resetDice();
+    }
     // check if at least one die is being held
     for (let i = 0; i < 6; i++) {
-        if (diceSet[i][1]) {
+        if (diceSet[i][1] && !diceSet[i][2]) {
+            diceSet[i][2] = true;
             turn = true;
         }
     }
@@ -83,16 +91,18 @@ function passDice() {
         turn = true;
         bank += hand;
         hand = 0;
-        
         bankText.textContent = bank;
+        handText.textContent = 0;
+        startGame();
     }
 }
 
 function retry() {
+    startGame();
     hand = 0;
     bank = 0;
-    startButton.style.visibility = 'visible';
-    retryButton.style.visibility = 'hidden';
+    handText.textContent = hand;
+    bankText.textContent = bank;
 }
 
 // Helper Functions ----------------------------------------------------------
@@ -121,8 +131,11 @@ function setDie(e) {
 function calculateHand() {
     let sum = 0;
     for (let i = 0; i < 6; i++) {
-        if (diceSet[i][1] && diceSet[i][1] == 1) {
-            sum += 1;
+        if (diceSet[i][0] == 1 && diceSet[i][1] && !diceSet[i][2]) {
+            sum += 100;
+        }
+        if (diceSet[i][0] == 5 && diceSet[i][1] && !diceSet[i][2]) {
+            sum += 50;
         }
     }
     sum += Number(handText.textContent);
@@ -130,11 +143,19 @@ function calculateHand() {
 }
 
 function checkDie() {
-    dice = [];
+    dice = [0, 0, 0, 0, 0, 0, 0];
+    count = 0;
+    //var debug = document.getElementById('debug');
     for (let i = 0; i < 6; i++) {
-        dice[diceSet[i][0]] += 1;
+        if (!diceSet[i][1]) {
+            dice[diceSet[i][0]] += 1;
+        }
+        else {
+            count += 1;
+        }
+        //setTimeout(debugHelp(diceSet[i][0], dice[diceSet[i][0]]), 1000);
     }
-    if (dice[1] > 0 || dice[2] > 2 || dice[3] > 2 || dice[4] > 2 || dice[5] > 0 || dice[6] > 2) {
+    if (dice[1] > 0 || dice[2] > 2 || dice[3] > 2 || dice[4] > 2 || dice[5] > 0 || dice[6] > 2 || count == 6) {
         dead = false;
     }
     else { 
@@ -155,6 +176,12 @@ function resetDice() {
         [1, false, false],
         [1, false, false],
     ];
+    for (let i = 0; i < 6; i++) {
+        var die = document.getElementById(i);
+        die.textContent = '';
+        die.style.backgroundColor = '#ffffffc9';
+    }
+    turn = true;
 }
 
 function died() {
@@ -164,5 +191,4 @@ function died() {
     retryButton.style.visibility = 'visible';
     rollButton.style.visibility = 'hidden'; 
     passButton.style.visibility = 'hidden';
-    visualDiceSet.style.visibility = 'hidden';
 }
