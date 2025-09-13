@@ -14,17 +14,7 @@ var visualDiceSet;
 var bankText;
 var handText;
 
-
 // Dice Set - die 1 is [0][0] for Num and [0][1] to check if Held.
-const startingDice = [
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-];
-
 let diceSet = [
     [1, false, false],
     [1, false, false],
@@ -34,6 +24,8 @@ let diceSet = [
     [1, false, false],
 ];
 
+let dice = [0, 0, 0, 0, 0, 0, 0];
+
 // Initial hand and bank totals
 let bank = 0;
 let hand = 0;
@@ -41,22 +33,22 @@ let hand = 0;
 // Count of held dice | 
 let count = 0;
 let dead = false;
-let turn = false;
+let turn = true;
 // preliminary bool to enforce proper use of setDie
 let start = false;
 
 // Button Functions-----------------------------------------------------------
 function startGame() {
     // Map all buttons - Start, Roll, Pass, and Retry
-    var startButton = document.getElementById('startButton');
-    var rollButton = document.getElementById('rollButton');
-    var passButton = document.getElementById('passButton');
-    var retryButton = document.getElementById('retryButton');
+    startButton = document.getElementById('startButton');
+    rollButton = document.getElementById('rollButton');
+    passButton = document.getElementById('passButton');
+    retryButton = document.getElementById('retryButton');
     // The visual Set of Dice
-    var visualDiceSet = document.getElementById('diceSet');
+    visualDiceSet = document.getElementById('diceSet');
     // Paragraph elements that contain hand and bank totals
-    var bankText = document.getElementById('bank');
-    var handText = document.getElementById('hand');
+    bankText = document.getElementById('bank');
+    handText = document.getElementById('hand');
     // Show roll and pass buttons
     rollButton.style.visibility = 'visible';
     passButton.style.visibility = 'visible';
@@ -96,7 +88,7 @@ function rollDice() {
                 diceSet[i][0] = getRandomInt(1, 6);
                 // Edit visual Die to match 
                 var die = document.getElementById(i);
-                die.textContent = (roman[diceSet[i][0]]);
+                die.textContent = roman[diceSet[i][0]];
             }
         }
         // This sets up the game loop
@@ -140,7 +132,7 @@ function setDie(e) {
     if (start) {
         var die = document.getElementById(e);
         if (die) {
-            if (diceSet[Number(e)][1]) {
+            if (diceSet[Number(e)][1] && !diceSet[Number(e)][2]) {
                 die.style.backgroundColor = '#ffffffc9';
                 diceSet[Number(e)][1] = false;
                 count -= 1;
@@ -155,6 +147,7 @@ function setDie(e) {
 }
 
 function addHand() {
+    checkDie();
     let sum = 0;
     for (let i = 0; i < 6; i++) {
         if (diceSet[i][0] == 1 && diceSet[i][1] && !diceSet[i][2]) {
@@ -192,7 +185,14 @@ function showDice() {
 
 function resetDice() {
     // reset set of dice to starting Dice
-    diceSet = startingDice;
+    diceSet = [
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+        [1, false, false],
+    ];
     // empty the visual board
     for (let i = 0; i < 6; i++) {
         var die = document.getElementById(i);
