@@ -114,3 +114,30 @@ button {
 #retryButton {
     visibility: hidden;
 }
+
+@media (min-width: 0px) {
+    .diceBoard {
+        width: 85%;
+    }
+    .footer {
+        width: 85%;
+    }
+}
+
+@media (min-width: 768px) {
+    .diceBoard {
+        width: 45%;
+    }
+    .footer {
+        width: 45%;
+    }
+}
+
+@media (min-width: 992px) {
+    .diceBoard {
+        width: 35%;
+    }
+    .footer {
+        width: 35%;
+    }
+}

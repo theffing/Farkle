@@ -1,0 +1,4 @@
+# Node.js Dependencies included in pack-lock.json
+node_modules
+
+*.o

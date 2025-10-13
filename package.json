@@ -1,0 +1,31 @@
+{
+  "name": "farkle",
+  "version": "0.0.1",
+  "description": "Web-Based Peer Dice Game",
+  "keywords": [
+    "Dice",
+    "Full-Stack",
+    "Minimal",
+    "Social",
+    "Game"
+  ],
+  "homepage": "https://github.com/theffing/Farkle#readme",
+  "bugs": {
+    "url": "https://github.com/theffing/Farkle/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/theffing/Farkle.git"
+  },
+  "license": "ISC",
+  "author": "Taylor Neo Heffington",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}

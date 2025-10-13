@@ -59,6 +59,11 @@ function startGame() {
     resetDice();
     // Show dice set
     setTimeout(showDice, 50);
+    // Reset Hand and Adjust Bank
+    hand = 0;
+    bank += hand;
+    bankText.textContent = bank;
+    handText.textContent = hand;
     // Set user status to alive
     dead = false;
 }
@@ -99,17 +104,7 @@ function rollDice() {
 }
 
 function passDice() {
-    // If it is your turn and you are not dead
-    if (turn && !dead) {
-        // Add all newly held scoring dice to hand sum
-        addHand();
-        turn = true;
-        bank += hand;
-        hand = 0;
-        bankText.textContent = bank;
-        handText.textContent = "0";
-        startGame();
-    }
+    startGame();
 }
 
 function retry() {
@@ -162,7 +157,7 @@ function addHand() {
 }
 
 function checkDie() {
-    dice = [0, 0, 0, 0, 0, 0, 0];
+    dice = [0, 0, 0, 0, 0, 0];
     //var debug = document.getElementById('debug');
     for (let i = 0; i < 6; i++) {
         if (!diceSet[i][1]) {
