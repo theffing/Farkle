@@ -126,10 +126,10 @@ button {
 
 @media (min-width: 768px) {
     .diceBoard {
-        width: 45%;
+        width: 50%;
     }
     .footer {
-        width: 45%;
+        width: 50%;
     }
 }
 

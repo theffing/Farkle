@@ -24,14 +24,22 @@ let diceSet = [
     [1, false, false],
 ];
 
-let dice = [0, 0, 0, 0, 0, 0, 0];
+let baseDiceSet = [
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+    [1, false, false],
+];
+
+let baseDiceCount = {"1":0, "2":0, "3":0, "4":0, "5":0, "6":0};
+let dice = {};
 
 // Initial hand and bank totals
 let bank = 0;
 let hand = 0;
 
-// Count of held dice | 
-let count = 0;
 let dead = false;
 let turn = true;
 // preliminary bool to enforce proper use of setDie
@@ -39,22 +47,20 @@ let start = false;
 
 // Button Functions-----------------------------------------------------------
 function startGame() {
-    // Map all buttons - Start, Roll, Pass, and Retry
+    // Map all visuals
     startButton = document.getElementById('startButton');
     rollButton = document.getElementById('rollButton');
     passButton = document.getElementById('passButton');
     retryButton = document.getElementById('retryButton');
-    // The visual Set of Dice
     visualDiceSet = document.getElementById('diceSet');
-    // Paragraph elements that contain hand and bank totals
     bankText = document.getElementById('bank');
     handText = document.getElementById('hand');
-    // Show roll and pass buttons
-    rollButton.style.visibility = 'visible';
-    passButton.style.visibility = 'visible';
     // Hide start and retry buttons
     retryButton.style.visibility = 'hidden';
     startButton.style.visibility = 'hidden';
+    // Show roll and pass buttons
+    rollButton.style.visibility = 'visible';
+    passButton.style.visibility = 'visible';
     // Set dice back to empty for first roll
     resetDice();
     // Show dice set
@@ -66,17 +72,16 @@ function startGame() {
     handText.textContent = hand;
     // Set user status to alive
     dead = false;
+    start = false;
 }
 
 function rollDice() {
+    if (start) {
+        // Add sum of held dice to hand total
+        addHand();
+    }
     // Game has started (used for setDie so users can't set starting dice)
     start = true;
-    // Add sum of held dice to hand total
-    addHand();
-    // Check if hold count is a complete six
-    if (count == 6) {
-        resetDice();
-    }
     // Check if at least one die is being held
     for (let i = 0; i < 6; i++) {
         // Checking if held and if it has already been accounted for in a previous roll/pass via addHand()
@@ -98,30 +103,17 @@ function rollDice() {
         }
         // This sets up the game loop
         turn = false;
-        // Checks if your die are in a losing position, ie. no scoring dice
-        checkDie();
     }
 }
 
 function passDice() {
+    addHand();
+    let hand = Number(handText.textContent);
+    handText.textContent = 1;
     startGame();
-}
-
-function retry() {
-    startGame();
-    start = false;
-    hand = 0;
-    bank = 0;
-    bankText.textContent = "0";
-    handText.textContent = "0";
 }
 
 // Helper Functions ----------------------------------------------------------
-
-// From https://gist.github.com/kerimdzhanov/7529623
-function getRandomInt(min, max) {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-}
 
 function setDie(e) {
     if (start) {
@@ -141,61 +133,62 @@ function setDie(e) {
     }
 }
 
+// Adds held die total to hand
 function addHand() {
-    checkDie();
     let sum = 0;
-    for (let i = 0; i < 6; i++) {
-        if (diceSet[i][0] == 1 && diceSet[i][1] && !diceSet[i][2]) {
-            sum += 100;
+    // Get count of each number rolled plus check if dead
+    checkDie();
+    // 1 = 100, 5 = 50
+    // three of a kind is worth 100 * the given number; 4 4 4 is worth 400 points
+    // three 1 is worth 1000
+    // four or more of a kind is worth double th epoints of three of a kind
+    // 4 4 4 4 is worth 800 : 4 4 4 4 4 is worth 1600
+    for (let i = 1; i < 7; i++) {
+        let num = 0;
+        if (i == 1 && dice[i] > 0) {
+            if (dice[i] > 2) {
+                num += 1000;
+            }
+            else {
+                num += dice[i] * 100;
+            }
         }
-        if (diceSet[i][0] == 5 && diceSet[i][1] && !diceSet[i][2]) {
-            sum += 50;
+        if (i == 5 && dice[i] > 0) {
+            if (dice[i] < 2) {
+                num += dice[i] * 50;
+            }
         }
+        if (dice[i] > 2 && i != 1) {
+            num += (i+1) * 100;
+        }
+        if (dice[i] > 3) {
+            num = num * 2;
+        }
+        if (dice[i] > 4) {
+            num = num * 2;
+        }
+        if (dice[i] > 5) {
+            num = num * 2;
+        }
+        sum += num;
     }
-    sum += Number(handText.textContent);
-    handText.textContent = sum;
+    // HOld on
+    handText.textContent = hand + sum;
+    hand += sum;
 }
 
+// Checks if you are in a losing position, ie. No scoring dice
 function checkDie() {
-    dice = [0, 0, 0, 0, 0, 0];
-    //var debug = document.getElementById('debug');
+    dice = baseDiceCount;
     for (let i = 0; i < 6; i++) {
-        if (!diceSet[i][1]) {
-            dice[diceSet[i][0]] += 1;
+        if (diceSet[i][1] && !diceSet[i][2]) {
+            diceSet[i][2] = true;
+            dice[i] += 1;
         }
-        //setTimeout(debugHelp(diceSet[i][0], dice[diceSet[i][0]]), 1000);
     }
-    if (dice[1] > 0 || dice[2] > 2 || dice[3] > 2 || dice[4] > 2 || dice[5] > 0 || dice[6] > 2 || count == 6) {
-        dead = false;
-    }
-    else { 
+    if (dice["0"] < 1 && dice["1"] < 3 && dice["2"] < 3 && dice["3"] < 3 && dice["4"] < 1 && dice["5"] < 3 && count < 6) {
         died();
     }
-}
-
-// For the setTimeout Function in startGame()
-function showDice() {
-    visualDiceSet.style.visibility = 'visible';
-}
-
-function resetDice() {
-    // reset set of dice to starting Dice
-    diceSet = [
-        [1, false, false],
-        [1, false, false],
-        [1, false, false],
-        [1, false, false],
-        [1, false, false],
-        [1, false, false],
-    ];
-    // empty the visual board
-    for (let i = 0; i < 6; i++) {
-        var die = document.getElementById(i);
-        die.textContent = '';
-        die.style.backgroundColor = '#ffffffc9';
-    }
-    turn = true;
-    start = false;
 }
 
 function died() {
@@ -206,4 +199,25 @@ function died() {
     retryButton.style.visibility = 'visible';
     rollButton.style.visibility = 'hidden'; 
     passButton.style.visibility = 'hidden';
+}
+
+function resetDice() {
+    // reset set of dice to starting Dice
+    diceSet = baseDiceSet;
+    // empty the visual board
+    for (let i = 0; i < 6; i++) {
+        var die = document.getElementById(i);
+        die.textContent = '';
+        die.style.backgroundColor = '#ffffffc9';
+    }
+}
+
+// From https://gist.github.com/kerimdzhanov/7529623
+function getRandomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1) + min);
+}
+
+// For the setTimeout Function in startGame()
+function showDice() {
+    visualDiceSet.style.visibility = 'visible';
 }
