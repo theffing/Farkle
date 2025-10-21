@@ -15,14 +15,7 @@ var bankText;
 var handText;
 
 // Dice Set - die 1 is [0][0] for Num and [0][1] to check if Held.
-let diceSet = [
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-    [1, false, false],
-];
+var diceSet;
 
 let baseDiceSet = [
     [1, false, false],
@@ -73,13 +66,11 @@ function startGame() {
     // Set user status to alive
     dead = false;
     start = false;
+    // Set Board
+    diceSet = baseDiceSet;
 }
 
 function rollDice() {
-    if (start) {
-        // Add sum of held dice to hand total
-        addHand();
-    }
     // Game has started (used for setDie so users can't set starting dice)
     start = true;
     // Check if at least one die is being held
